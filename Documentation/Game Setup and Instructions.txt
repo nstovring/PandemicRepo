@@ -1,0 +1,10 @@
+Step 0: The game on works on LAN networks, meaning that it doesn't work on the AAU-1x network
+Step 1: Open the build
+Step 2: One computer becommes host by pressing the "host game" button, all other computers should just press "joing game"
+Step 3: When all players have joined (max three other players and then the host), press "s" to start the game
+Step 4: Press "d" to give players cards, and then "e" to mix epidemic cards into the PlayerDeck
+Step 5: The game is ready to be played, each player takes turns taking actions, technicly all players are able to act at the same time, however that's not how the game is meant to be played
+Step 6: Each player can do 4 actions during his/her turn, take actions either by clicking directly at cities or disease cubes, or press the buttons at the side todo the functions stated on them, 
+	or click directly on the cards displayed at the bottom and then the move to city button, to move idrectly to the selected city
+Step 7: When 4 actions have been taken, press the "End Turn" button to draw 2 new cards, infect cities and reset how many actions you have left
+Step 8: Enjoy the game :)
