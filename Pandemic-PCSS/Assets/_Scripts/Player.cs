@@ -436,4 +436,142 @@ public class Player : NetworkBehaviour
         }
         return false;
     }
+
+
+    /// <summary>
+    /// From this point, all the code is related to trading of cards
+    /// </summary>
+
+    GameObject playerSelection;
+    GameObject otherPlayerArea;
+    GameObject[] playerCardButtons = new GameObject[7];
+    GameObject[] playerSelectionButtons = new GameObject[3];
+
+    //When called, checks cityID with cards of the players, expand for further info.
+    public void startTrade()
+    {
+        for (int i = 0; i < GameManager.players.Count; i++)
+        {
+            Debug.Log(GameManager.players.Count);
+            if (GameManager.players[i] == isLocalPlayer)
+            {
+                for (int j = 0; j < GameManager.players[i].hand.cards.Length; j++)
+                {
+                    //print(GameManager.players[i].hand.cards[j].Id);
+                    Debug.Log(GameManager.players[i].hand.cards.Length);
+                }
+            }
+        }
+        GameObject[] playersGameObjects = GameObject.FindGameObjectsWithTag("Player");
+        List<Player> players = new List<Player>();
+
+        foreach (var i in playersGameObjects)
+        {
+            players.Add(i.GetComponent<Player>());
+        }
+
+        playerSelection = GameObject.Find("PlayerSelection");
+        //playerSelection.SetActive(true);
+        bool trade = false;
+
+        //Runs through all the players, inluding yourself. lel
+        for (int i = 0; i < players.Count; i++)
+        {
+            for (int j = 0; j < players[i].hand.cards.Length; j++)
+            {
+                if (players[i].hand.cards[j] != null && players[i].cityID == players[i].hand.cards[j].Id)
+                {
+                    trade = true;
+                    //If you dont have the card, display the one who has it, and if you click on them, you get that card
+                    if (players[i] != isLocalPlayer)
+                    {
+                        playerSelectionButtons[i] = playerSelection.transform.GetChild(i).gameObject;
+                        playerSelectionButtons[i].GetComponentInChildren<Text>().text = players[i].name;
+                        var i1 = i;
+                        playerSelectionButtons[i].GetComponent<Button>().onClick.AddListener(delegate { takeCard(players[i1].hand.cards[j].Id, players[i1]); });
+                    }
+
+                    //If you have the card, disply all the other players. If you click on one of em, they get the card
+                    else {
+                        for (int x = 0; x < players.Count; x++)
+                        {
+                            if (players[i] != isLocalPlayer)
+                            {
+                                playerSelectionButtons[i] = playerSelection.transform.GetChild(i).gameObject;
+                                playerSelectionButtons[i].GetComponentInChildren<Text>().text = players[i].name;
+                                var i1 = i;
+                                playerSelectionButtons[i].GetComponent<Button>().onClick.AddListener(delegate { giveCard(players[i1].hand.cards[j].Id, players[i1]); });
+                            }
+                        }
+                    }
+                    trade = true;
+                    break;
+                }
+            }
+            if (trade == true) { break; }
+        }
+    }
+
+
+    //Gives a card to the other player
+    public void giveCard(int cardID, Player player)
+    {
+        for (int i = 0; i < player.hand.cards.Length; i++)
+        {
+            if (hand.cards[i] != null && hand.cards[i].Id == cardID)
+            {
+                hand.discard(i);
+            }
+        }
+        for (int i = 0; i < this.hand.cards.Length; i++)
+        {
+            if (player.hand.cards[i] == null)
+            {
+                //player.hand.addToHand(GameManager.AllCardsStack.cards[cardID]);
+                player.hand.cards[i] = GameManager.AllCardsStack.cards[cardID];
+                exitTrade();
+                break;
+            }
+        }
+
+    }
+
+    //Takes a card from the other player
+    private void takeCard(int cardID, Player player)
+    {
+
+        for (int i = 0; i < player.hand.cards.Length; i++)
+        {
+            if (player.hand.cards[i] != null && player.hand.cards[i].Id == cardID)
+            {
+                player.hand.discard(i);
+                //  player.hand.updateCards();
+            }
+        }
+
+        for (int i = 0; i < this.hand.cards.Length; i++)
+        {
+            if (hand.cards[i] == null)
+            {
+                hand.cards[i] = GameManager.AllCardsStack.cards[cardID];
+                //  this.hand.updateCards();
+                exitTrade();
+                break;
+            }
+        }
+    }
+
+    //Exits the entire trading debacle
+    public void exitTrade()
+    {
+        playerSelection.SetActive(false);
+    }
+
+
+
+
 }
+
+
+
+
